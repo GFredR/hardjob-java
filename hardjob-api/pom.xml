@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.greenfred</groupId>
+        <artifactId>hardjob-java</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>hardjob-api</artifactId>
+    <packaging>jar</packaging>
+    <name>hardjob-api</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.greenfred</groupId>
+            <artifactId>hardjob-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.2.6.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>
+                                repackage
+                            </goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.greenfred.HardjobApiApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

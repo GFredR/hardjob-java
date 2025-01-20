@@ -1,0 +1,21 @@
+package org.greenfred.controller;
+
+import org.greenfred.enums.ResponseCodeEnum;
+import org.greenfred.entity.vo.ResponseVO;
+
+public class BaseController {
+    protected static final String STATUS_SUCCESS = "success";
+
+    protected static final String STATUS_ERROR = "error";
+
+    protected <T> ResponseVO getSuccessResponseVO(T t) {
+        ResponseVO<T> responseVO = new ResponseVO<>();
+        responseVO.setStatus(STATUS_SUCCESS);
+        responseVO.setCode(ResponseCodeEnum.CODE_200.getCode());
+        responseVO.setInfo(ResponseCodeEnum.CODE_200.getMsg());
+        responseVO.setData(t);
+        return responseVO;
+    }
+
+
+}
