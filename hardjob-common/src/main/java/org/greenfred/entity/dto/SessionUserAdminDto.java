@@ -1,9 +1,23 @@
 package org.greenfred.entity.dto;
 
+import org.greenfred.entity.po.SysMenu;
+import org.greenfred.entity.vo.SysMenuVO;
+
+import java.util.List;
+
 public class SessionUserAdminDto {
     private Integer userId;
     private String username;
     private Boolean superAdmin;
+    private List<SysMenuVO> menuList;
+
+    public List<SysMenuVO> getMenuList() {
+        return menuList;
+    }
+
+    public void setMenuList(List<SysMenuVO> menuList) {
+        this.menuList = menuList;
+    }
 
     public Integer getUserId() {
         return userId;

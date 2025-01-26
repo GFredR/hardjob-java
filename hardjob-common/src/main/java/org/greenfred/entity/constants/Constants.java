@@ -7,6 +7,8 @@ public class Constants {
 
     public static final String SESSION_KEY = "session_key";
 
+    public static final Integer DEFAULT_ROOT_MENUID = 0;
+
     public static final Integer LENGTH_5 = 5;
     public static final Integer LENGTH_10 = 10;
     public static final Integer LENGTH_15 = 15;
