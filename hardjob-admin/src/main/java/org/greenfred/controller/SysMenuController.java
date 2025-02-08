@@ -1,6 +1,9 @@
 package org.greenfred.controller;
 
 import java.util.List;
+
+import org.greenfred.annotation.GlobalInterceptor;
+import org.greenfred.annotation.VerifyParam;
 import org.greenfred.entity.po.SysMenu;
 import org.greenfred.entity.query.SysMenuQuery;
 import org.greenfred.entity.vo.PaginationResultVO;
@@ -27,8 +30,9 @@ public class SysMenuController extends BaseController{
 	/** 
 	* 加载列表
 	*/
-	@RequestMapping("menuList")
-	public ResponseVO loadDataList() {
+	@RequestMapping("/menuList")
+	@GlobalInterceptor
+	public ResponseVO menuList() {
 		SysMenuQuery query = new SysMenuQuery();
 		query.setFormat2Tree(true);
 		query.setOrderBy("sort asc");
@@ -37,6 +41,20 @@ public class SysMenuController extends BaseController{
 
 		return getSuccessResponseVO(sysMenuList);
 	}
+
+	 @RequestMapping("/saveMenu")
+	 @GlobalInterceptor
+	 public ResponseVO saveMenu(@VerifyParam SysMenu sysMenu) {
+		 sysMenuService.saveMenu(sysMenu);
+		 return getSuccessResponseVO(null);
+	 }
+
+	 @RequestMapping("/deleteMenu")
+	 @GlobalInterceptor
+	 public ResponseVO deleteMenu(@VerifyParam(required = true) Integer menuId) {
+		 sysMenuService.deleteSysMenuByMenuId(menuId);
+		 return getSuccessResponseVO(null);
+	 }
 
 	/** 
 	* 新增

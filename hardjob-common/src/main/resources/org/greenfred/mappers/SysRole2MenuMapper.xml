@@ -129,6 +129,13 @@
 	<select id = "selectByRoleIdAndMenuId" resultMap="base_result_map">
 		select <include refid = "base_column_list"/> from sys_role_2_menu where role_id=#{roleId} and menu_id=#{menuId}
 	</select>
+	<select id="selectMenuIdsByRoleIds" resultType="java.lang.Integer">
+		select menu_id from sys_role_2_menu where role_id in (
+		    <foreach collection="roleIds" separator="," item="item">
+		        #{item}
+			</foreach>
+			) and check_type=1
+	</select>
 	<!--根据RoleIdAndMenuId更新-->
 	<update id = "updateByRoleIdAndMenuId" parameterType="org.greenfred.entity.po.SysRole2Menu">
 		update sys_role_2_menu
@@ -149,6 +156,9 @@
 	<!--根据RoleIdAndMenuId删除-->
 	<delete id = "deleteByRoleIdAndMenuId" >
 		delete from sys_role_2_menu where role_id=#{roleId} and menu_id=#{menuId}
+	</delete>
+	<delete id="deleteByRoleId">
+		delete from sys_role_2_menu where role_id=#{roleId}
 	</delete>
 
 </mapper>

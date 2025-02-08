@@ -1,5 +1,7 @@
 package org.greenfred.entity.po;
 
+import org.greenfred.annotation.VerifyParam;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,12 +22,14 @@ public class SysMenu implements Serializable {
 	* 菜单名称
 	*/
 
+	@VerifyParam(required = true, max = 32)
 	private String menuName;
 
 	/** 
 	* 菜单类型
 	*/
 
+	@VerifyParam(required = true)
 	private Integer menuType;
 
 	/** 
@@ -38,18 +42,20 @@ public class SysMenu implements Serializable {
 	* 上级菜单ID
 	*/
 
+	@VerifyParam(required = true)
 	private Integer pId;
 
 	/** 
 	* 菜单排序
 	*/
 
+	@VerifyParam(required = true)
 	private Integer sort;
 
 	/** 
 	* 权限编码
 	*/
-
+	@VerifyParam(required = true)
 	private String permissionCode;
 
 	/** 

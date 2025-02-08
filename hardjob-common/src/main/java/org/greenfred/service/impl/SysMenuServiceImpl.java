@@ -54,7 +54,20 @@ public class SysMenuServiceImpl implements SysMenuService {
 
 	}
 
-	/** 
+	 @Override
+	 public void saveMenu(SysMenu sysMenu) {
+		 if (sysMenu.getMenuId() == null) {
+			 this.sysMenuMapper.insert(sysMenu);
+		 } else {
+			 this.sysMenuMapper.updateByMenuId(sysMenu, sysMenu.getMenuId());
+		 }
+
+
+	 }
+
+
+
+	 /**
 	* 根据条件查询数量
 	*/
 	public Integer findCountByParam(SysMenuQuery query) {

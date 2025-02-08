@@ -2,6 +2,8 @@ package org.greenfred.entity.po;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
@@ -32,7 +34,17 @@ public class SysRole implements Serializable {
 
 	private String roleDesc;
 
-	/** 
+	private List<Integer> menuIds;
+
+	 public List<Integer> getMenuIds() {
+		 return menuIds;
+	 }
+
+	 public void setMenuIds(List<Integer> menuIds) {
+		 this.menuIds = menuIds;
+	 }
+
+	 /**
 	* 创建时间
 	*/
 

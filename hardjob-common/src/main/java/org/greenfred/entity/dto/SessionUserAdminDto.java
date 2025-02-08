@@ -10,6 +10,15 @@ public class SessionUserAdminDto {
     private String username;
     private Boolean superAdmin;
     private List<SysMenuVO> menuList;
+    private List<String> permissionCodeList;
+
+    public List<String> getPermissionCodeList() {
+        return permissionCodeList;
+    }
+
+    public void setPermissionCodeList(List<String> permissionCodeList) {
+        this.permissionCodeList = permissionCodeList;
+    }
 
     public List<SysMenuVO> getMenuList() {
         return menuList;

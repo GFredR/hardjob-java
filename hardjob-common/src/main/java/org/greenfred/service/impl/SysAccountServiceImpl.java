@@ -11,9 +11,12 @@ import org.greenfred.entity.query.SysMenuQuery;
 import org.greenfred.entity.vo.PaginationResultVO;
 import org.greenfred.entity.vo.SysMenuVO;
 import org.greenfred.enums.SysAccountStatusEnum;
+import org.greenfred.exception.BusinessException;
 import org.greenfred.service.SysAccountService;
 import org.greenfred.service.SysMenuService;
 import org.greenfred.utils.CopyTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import org.greenfred.mappers.SysAccountMapper;
@@ -32,6 +35,8 @@ public class SysAccountServiceImpl implements SysAccountService {
 
 	@Resource
 	private SysMenuService sysMenuService;
+
+	private Logger logger = LoggerFactory.getLogger(SysAccountServiceImpl.class);
 
 	/** 
 	* 根据条件查询列表
@@ -120,37 +125,48 @@ public class SysAccountServiceImpl implements SysAccountService {
 	}
 
 	 @Override
-	 public SessionUserAdminDto login(String phone, String password) {
+	 public SessionUserAdminDto login(String phone, String password) throws BusinessException {
 		 SysAccount sysAccount = this.sysAccountMapper.selectByPhone(phone);
 		 if(sysAccount == null){
-			 throw new RuntimeException("账号或者密码错误");
+			 throw new BusinessException("账号或者密码错误");
 		 }
 		 if(SysAccountStatusEnum.DISABLE.getStatus().equals(sysAccount.getStatus())){
-			 throw new RuntimeException("账号已经被禁用");
+			 throw new BusinessException("账号已经被禁用");
 		 }
 		 if(!sysAccount.getPassword().equals(password)){
-			 throw new RuntimeException("账号或者密码错误");
+			 throw new BusinessException("账号或者密码错误");
 		 }
 
 		 SysMenuQuery query = new SysMenuQuery();
-		 query.setFormat2Tree(true);
+		 query.setFormat2Tree(false);
 		 query.setOrderBy("sort asc");
 
 		 List<SysMenu> sysMenuList = sysMenuService.findListByParam(query);
 
+		 List<String> permissionCodeList = new ArrayList<>();
+		 sysMenuList.forEach(item -> {
+			 permissionCodeList.add(item.getPermissionCode());
+		 });
+
+		 logger.info("sysMenuList:{}", sysMenuList);
+
 		 List<SysMenuVO> menuVOList = new ArrayList<>();
+		 sysMenuList = sysMenuService.convertLine2Tree4Menu(sysMenuList, 0);
 
 		 sysMenuList.forEach(item -> {
 			SysMenuVO menuVO = CopyTools.copy(item, SysMenuVO.class);
+			logger.info("children:{}", item.getChildren());
 			menuVO.setChildren(CopyTools.copyList(item.getChildren(), SysMenuVO.class));
 			menuVOList.add(menuVO);
 		 });
+
 
 		 SessionUserAdminDto sessionUserAdminDto = new SessionUserAdminDto();
 		 sessionUserAdminDto.setUserId(sysAccount.getUserId());
 		 sessionUserAdminDto.setUsername(sysAccount.getUserName());
 		 sessionUserAdminDto.setSuperAdmin(true);
 		 sessionUserAdminDto.setMenuList(menuVOList);
+		 sessionUserAdminDto.setPermissionCodeList(permissionCodeList);
 
 		 return sessionUserAdminDto;
 	 }

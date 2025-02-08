@@ -6,7 +6,9 @@ import org.greenfred.entity.dto.SessionUserAdminDto;
 import org.greenfred.entity.po.SysAccount;
 import org.greenfred.entity.query.SysAccountQuery;
 import org.greenfred.entity.vo.PaginationResultVO;
- /**
+import org.greenfred.exception.BusinessException;
+
+/**
  * @ Description: Service
  * @ author: 郭丰锐
  * @ date: 2025/01/13
@@ -73,6 +75,6 @@ public interface SysAccountService {
 	*/
 	Integer deleteSysAccountByPhone(String phone);
 
-	SessionUserAdminDto login(String phone, String password);
+	SessionUserAdminDto login(String phone, String password) throws BusinessException;
 
 }
