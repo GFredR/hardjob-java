@@ -12,6 +12,8 @@ import org.greenfred.entity.vo.PaginationResultVO;
 import org.greenfred.mappers.SysRoleMapper;
 import org.greenfred.service.SysMenuService;
 import org.greenfred.utils.StringTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ import org.greenfred.entity.query.SimplePage;
  */
 @Service("sysMenuService")
 public class SysMenuServiceImpl implements SysMenuService {
+
+    private Logger logger = LoggerFactory.getLogger(SysMenuServiceImpl.class);
     private static final String ROOT_MENU_NAME = "所有菜单";
 
     @Resource
@@ -55,11 +59,14 @@ public class SysMenuServiceImpl implements SysMenuService {
     public List<SysMenu> convertLine2Tree4Menu(List<SysMenu> dataList, Integer pId) {
         List<SysMenu> children = new ArrayList<>();
         for (SysMenu menu : dataList) {
+            logger.info("Checking menu: MenuId: {}, PId: {}, target pId: {}", menu.getMenuId(), menu.getPId(), pId);
             if (menu.getMenuId() != null && menu.getPId() != null && menu.getPId().equals(pId)) {
                 menu.setChildren(convertLine2Tree4Menu(dataList, menu.getMenuId()));
                 children.add(menu);
             }
         }
+        logger.info("dataList: {}", dataList);
+        logger.info("pId: {}, children: {}", pId, children);
         return children;
 
     }
@@ -81,6 +88,9 @@ public class SysMenuServiceImpl implements SysMenuService {
             return new ArrayList<>();
         }
         int[] roleIdArray = Arrays.stream(roleIds.split(",")).mapToInt(Integer::valueOf).toArray();
+        logger.info("roleIdArray:{}", roleIdArray);
+        List<SysMenu> menuList = sysMenuMapper.selectAllMenuByRoleIds(roleIdArray);
+        logger.info("menuList:{}", menuList);
         return sysMenuMapper.selectAllMenuByRoleIds(roleIdArray);
     }
 
