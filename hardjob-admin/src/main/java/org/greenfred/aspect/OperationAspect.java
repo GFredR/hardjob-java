@@ -8,6 +8,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.greenfred.annotation.GlobalInterceptor;
 import org.greenfred.annotation.VerifyParam;
+import org.greenfred.entity.constants.Constants;
+import org.greenfred.entity.dto.SessionUserAdminDto;
+import org.greenfred.enums.PermissionCodeEnum;
 import org.greenfred.enums.ResponseCodeEnum;
 import org.greenfred.exception.BusinessException;
 import org.greenfred.utils.StringTools;
@@ -15,10 +18,14 @@ import org.greenfred.utils.VerifyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.List;
 
 @Aspect
 @Component("operationAspect")
@@ -42,6 +49,21 @@ public class OperationAspect {
             return;
         }
         /**
+         * 校验登录
+         */
+        if (interceptor.checkLogin()) {
+            checkLogin();
+        }
+
+        /**
+         * 校验权限
+         */
+        if (interceptor.permissionCode() != null && interceptor.permissionCode() != PermissionCodeEnum.NO_PERMISSION) {
+            checkPermission(interceptor.permissionCode());
+        }
+
+
+        /**
          * 校验参数
          */
         if (interceptor.checkParam()) {
@@ -49,6 +71,30 @@ public class OperationAspect {
         }
         logger.info("拦截到了方法:{}", method.getName());
     }
+
+    /**
+     * 校验登录
+     */
+    void checkLogin() throws BusinessException {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        SessionUserAdminDto sessionUserAdminDto = (SessionUserAdminDto) request.getSession().getAttribute(Constants.SESSION_KEY);
+        if (sessionUserAdminDto == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_901);
+        }
+    }
+
+    /**
+     * 校验权限
+     */
+    void checkPermission(PermissionCodeEnum permissionCodeEnum) throws BusinessException {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        SessionUserAdminDto sessionUserAdminDto = (SessionUserAdminDto) request.getSession().getAttribute(Constants.SESSION_KEY);
+        List<String> permissionCodeList = sessionUserAdminDto.getPermissionCodeList();
+        if (!permissionCodeList.contains(permissionCodeEnum.getCode())) {
+           throw new BusinessException(ResponseCodeEnum.CODE_902);
+        }
+    }
+
 
     /**
      * 校验参数

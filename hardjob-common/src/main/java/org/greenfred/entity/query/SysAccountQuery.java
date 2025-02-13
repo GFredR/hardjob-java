@@ -67,7 +67,17 @@ public class SysAccountQuery extends BaseQuery {
 
 	private String createTimeEnd;
 
-	@Override
+	private Boolean queryRoles;
+
+	 public Boolean getQueryRoles() {
+		 return queryRoles;
+	 }
+
+	 public void setQueryRoles(Boolean queryRoles) {
+		 this.queryRoles = queryRoles;
+	 }
+
+	 @Override
 	public String toString() {
 		return "用户ID:" + (userId == null ? " 空 " : userId) + ",手机号:" + (phone == null ? " 空 " : phone) + ",用户名:" + (userName == null ? " 空 " : userName) + ",密码:" + (password == null ? " 空 " : password) + ",位置:" + (position == null ? " 空 " : position) + ",状态:" + (status == null ? " 空 " : status) + ",规则:" + (roles == null ? " 空 " : roles) + ",创建日期:" + (createTime == null ? " 空 " : createTime);
 	}

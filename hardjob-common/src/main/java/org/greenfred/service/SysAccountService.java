@@ -75,6 +75,8 @@ public interface SysAccountService {
 	*/
 	Integer deleteSysAccountByPhone(String phone);
 
+
 	SessionUserAdminDto login(String phone, String password) throws BusinessException;
 
+	void saveSysAccount(SysAccount sysAccount) throws BusinessException;
 }

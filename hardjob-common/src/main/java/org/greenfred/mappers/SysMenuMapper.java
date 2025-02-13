@@ -2,7 +2,9 @@ package org.greenfred.mappers;
 
 import org.apache.ibatis.annotations.Param;
 import java.io.Serializable;
- /**
+import java.util.List;
+
+/**
  * @ Description: Mapper
  * @ author: 郭丰锐
  * @ date: 2025/01/22
@@ -23,5 +25,6 @@ public interface SysMenuMapper<T, P> extends BaseMapper {
 	*/
 	Integer deleteByMenuId(@Param("menuId") Integer menuId);
 
+	List<T> selectAllMenuByRoleIds(@Param("roleIds") int[] roleIds);
 
 }

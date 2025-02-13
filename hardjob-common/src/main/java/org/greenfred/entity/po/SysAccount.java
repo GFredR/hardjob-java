@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.greenfred.annotation.VerifyParam;
+import org.greenfred.enums.VerifyRegexEnum;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
@@ -25,18 +27,21 @@ public class SysAccount implements Serializable {
 	* 手机号
 	*/
 
+	@VerifyParam(regex = VerifyRegexEnum.PHONE, required = true)
 	private String phone;
 
 	/** 
 	* 用户名
 	*/
 
+	@VerifyParam(required = true, max = 20)
 	private String userName;
 
 	/** 
 	* 密码
 	*/
 	@JsonIgnore
+	@VerifyParam(regex = VerifyRegexEnum.PASSWORD)
 	private String password;
 
 	/** 
@@ -54,7 +59,7 @@ public class SysAccount implements Serializable {
 	/** 
 	* 规则
 	*/
-
+	@VerifyParam(required = true)
 	private String roles;
 
 	/** 
@@ -65,7 +70,17 @@ public class SysAccount implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 
-	public void setUserId(Integer userId) {
+	private String roleNames;
+
+	 public String getRoleNames() {
+		 return roleNames;
+	 }
+
+	 public void setRoleNames(String roleNames) {
+		 this.roleNames = roleNames;
+	 }
+
+	 public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 

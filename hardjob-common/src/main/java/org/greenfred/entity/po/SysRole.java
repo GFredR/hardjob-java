@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.greenfred.annotation.VerifyParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
@@ -25,13 +26,13 @@ public class SysRole implements Serializable {
 	/** 
 	* 角色名称
 	*/
-
+	@VerifyParam(required = true, max = 100)
 	private String roleName;
 
 	/** 
 	* 角色描述
 	*/
-
+	@VerifyParam(max = 300)
 	private String roleDesc;
 
 	private List<Integer> menuIds;

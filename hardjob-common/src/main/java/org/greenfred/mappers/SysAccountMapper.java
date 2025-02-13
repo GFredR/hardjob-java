@@ -39,4 +39,5 @@ public interface SysAccountMapper<T, P> extends BaseMapper {
 	Integer deleteByPhone(@Param("phone") String phone);
 
 
+
 }

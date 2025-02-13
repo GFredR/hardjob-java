@@ -60,5 +60,5 @@ public interface SysMenuService {
 
 	void saveMenu(SysMenu sysMenu);
 
-
+	List<SysMenu> getAllMenuByRoleIds(String roleIds);
 }
