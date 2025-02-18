@@ -164,7 +164,7 @@ public class SysAccountServiceImpl implements SysAccountService {
         sessionUserAdminDto.setUserId(sysAccount.getUserId());
         sessionUserAdminDto.setUsername(sysAccount.getUserName());
 
-        List<SysMenu> allMenus = new ArrayList<>();
+        List<SysMenu> allMenus;
 
         if (!StringTools.isEmpty(appConfig.getSuperAdminPhones()) && ArrayUtils.contains(appConfig.getSuperAdminPhones().split(","), sysAccount.getPhone())) {
             sessionUserAdminDto.setSuperAdmin(true);

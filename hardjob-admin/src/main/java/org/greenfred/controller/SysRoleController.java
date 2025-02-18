@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.greenfred.annotation.GlobalInterceptor;
 import org.greenfred.annotation.VerifyParam;
 import org.greenfred.entity.po.SysRole2Menu;
+import org.greenfred.enums.PermissionCodeEnum;
 import org.greenfred.exception.BusinessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
@@ -43,14 +44,14 @@ public class SysRoleController extends BaseController {
      * 加载列表
      */
     @RequestMapping("/loadRoles")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ROLE_LIST)
     public ResponseVO loadRoles(SysRoleQuery query) {
         query.setOrderBy("create_time desc");
         return getSuccessResponseVO(sysRoleService.findListByPage(query));
     }
 
     @RequestMapping("/loadAllRoles")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ROLE_LIST)
     public ResponseVO loadAllRoles() {
         SysRoleQuery query = new SysRoleQuery();
         query.setOrderBy("create_time desc");
@@ -61,7 +62,7 @@ public class SysRoleController extends BaseController {
      * 新增
      */
     @RequestMapping("/saveRole")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ROLE_EDIT)
     public ResponseVO saveRole(@VerifyParam SysRole bean,
                                String menuIds,
                                String halfMenuIds) throws BusinessException {
@@ -70,14 +71,14 @@ public class SysRoleController extends BaseController {
     }
 
     @RequestMapping("/saveRoleMenu")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ROLE_EDIT)
     public ResponseVO saveRoleMenu(@VerifyParam(required = true) Integer roleId, @VerifyParam(required = true) String menuIds, String halfMenuIds) throws BusinessException {
         this.sysRoleService.saveRoleMenu(roleId, menuIds, halfMenuIds);
         return getSuccessResponseVO(null);
     }
 
     @RequestMapping("/getRoleByRoleId")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ROLE_LIST)
     public ResponseVO getRoleByRoleId(@VerifyParam(required = true) Integer roleId) {
         SysRole sysRole = sysRoleService.getSysRoleByRoleId(roleId);
         return getSuccessResponseVO(sysRole);
@@ -87,9 +88,9 @@ public class SysRoleController extends BaseController {
      * 根据RoleId删除角色和角色菜单关联表相关信息
      */
     @RequestMapping("/deleteRole")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ROLE_DEL)
     public ResponseVO deleteSysRoleByRoleId(@VerifyParam(required = true) Integer roleId) throws BusinessException {
         this.sysRoleService.deleteSysRoleByRoleId(roleId);
-
         return getSuccessResponseVO(null);
     }
 }

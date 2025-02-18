@@ -1,7 +1,11 @@
 package org.greenfred.controller;
 
+import org.greenfred.entity.constants.Constants;
+import org.greenfred.entity.dto.SessionUserAdminDto;
 import org.greenfred.enums.ResponseCodeEnum;
 import org.greenfred.entity.vo.ResponseVO;
+
+import javax.servlet.http.HttpSession;
 
 public class BaseController {
     protected static final String STATUS_SUCCESS = "success";
@@ -17,5 +21,9 @@ public class BaseController {
         return responseVO;
     }
 
+    protected SessionUserAdminDto getUserAdminFromSession(HttpSession session) {
+        SessionUserAdminDto sessionUserAdminDto = (SessionUserAdminDto) session.getAttribute(Constants.SESSION_KEY);
+        return sessionUserAdminDto;
+    }
 
 }

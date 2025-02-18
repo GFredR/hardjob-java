@@ -10,6 +10,7 @@ import org.greenfred.entity.vo.ResponseVO;
 import org.greenfred.enums.VerifyRegexEnum;
 import org.greenfred.exception.BusinessException;
 import org.greenfred.service.SysAccountService;
+import org.greenfred.utils.StringTools;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,5 +53,22 @@ public class LoginController extends BaseController {
         SessionUserAdminDto userAdminDto = sysAccountService.login(phone, password);
         session.setAttribute(Constants.SESSION_KEY, userAdminDto);
         return getSuccessResponseVO(userAdminDto);
+    }
+
+    @RequestMapping("/logout")
+    @GlobalInterceptor(checkLogin = false)
+    public ResponseVO logout(HttpSession session) {
+        session.invalidate();
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/updateMyPwd")
+    @GlobalInterceptor
+    public ResponseVO updateMyPwd(HttpSession session, @VerifyParam(regex = VerifyRegexEnum.PASSWORD) String password) {
+        SessionUserAdminDto userAdminDto = getUserAdminFromSession(session);
+        SysAccount sysAccount = new SysAccount();
+        sysAccount.setPassword(StringTools.encodeByMd5(password));
+        sysAccountService.updateSysAccountByUserId(sysAccount, userAdminDto.getUserId());
+        return getSuccessResponseVO(null);
     }
 }

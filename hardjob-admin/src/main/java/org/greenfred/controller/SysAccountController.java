@@ -51,14 +51,14 @@ public class SysAccountController extends BaseController {
     }
 
     @RequestMapping("/saveAccount")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ACCOUNT_EDIT)
     public ResponseVO saveAccount(@VerifyParam(required = true) SysAccount account) throws BusinessException {
         sysAccountService.saveSysAccount(account);
         return getSuccessResponseVO(null);
     }
 
     @RequestMapping("/updatePassword")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ACCOUNT_UPDATE_PASSWORD)
     public ResponseVO updatePassword(@VerifyParam(required = true) Integer userId,
                                      @VerifyParam(required = true, regex = VerifyRegexEnum.PASSWORD) String password) throws BusinessException {
         SysAccount sysAccount = new SysAccount();
@@ -68,7 +68,7 @@ public class SysAccountController extends BaseController {
     }
 
     @RequestMapping("/updateStatus")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ACCOUNT_OP_STATUS)
     public ResponseVO updateStatus(@VerifyParam(required = true) Integer userId,
                                      @VerifyParam(required = true) Integer status) throws BusinessException {
         UserStatusEnum userStatusEnum = UserStatusEnum.getByStatus(status);
@@ -83,7 +83,7 @@ public class SysAccountController extends BaseController {
     }
 
     @RequestMapping("/deleteAccount")
-    @GlobalInterceptor
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.SETTINGS_ACCOUNT_DEL)
     public ResponseVO deleteAccount(@VerifyParam(required = true) Integer userId) throws BusinessException {
         SysAccount sysAccount = sysAccountService.getSysAccountByUserId(userId);
         if (!StringTools.isEmpty(appConfig.getSuperAdminPhones()) && ArrayUtils.contains(appConfig.getSuperAdminPhones().split(","), sysAccount.getPhone())) {
@@ -94,82 +94,5 @@ public class SysAccountController extends BaseController {
         return getSuccessResponseVO(null);
     }
 
-    /**
-     * 新增
-     */
-    @RequestMapping("add")
-    public ResponseVO add(SysAccount bean) {
-        this.sysAccountService.add(bean);
-        return getSuccessResponseVO(null);
-    }
 
-    /**
-     * 批量新增
-     */
-    @RequestMapping("addBatch")
-    public ResponseVO addBatch(@RequestBody List<SysAccount> listBean) {
-        this.sysAccountService.addBatch(listBean);
-        return getSuccessResponseVO(null);
-    }
-
-    /**
-     * 批量新增或修改
-     */
-    @RequestMapping("addOrUpdateBatch")
-    public ResponseVO addOrUpdateBatch(@RequestBody List<SysAccount> listBean) {
-        this.sysAccountService.addOrUpdateBatch(listBean);
-        return getSuccessResponseVO(null);
-    }
-
-    /**
-     * 根据UserId查询
-     */
-    @RequestMapping("getSysAccountByUserId")
-    public ResponseVO getSysAccountByUserId(Integer userId) {
-        return getSuccessResponseVO(this.sysAccountService.getSysAccountByUserId(userId));
-    }
-
-    /**
-     * 根据UserId更新
-     */
-    @RequestMapping("updateSysAccountByUserId")
-    public ResponseVO updateSysAccountByUserId(SysAccount bean, Integer userId) {
-        this.sysAccountService.updateSysAccountByUserId(bean, userId);
-        return getSuccessResponseVO(null);
-    }
-
-    /**
-     * 根据UserId删除
-     */
-    @RequestMapping("deleteSysAccountByUserId")
-    public ResponseVO deleteSysAccountByUserId(Integer userId) {
-        this.sysAccountService.deleteSysAccountByUserId(userId);
-        return getSuccessResponseVO(null);
-    }
-
-    /**
-     * 根据Phone查询
-     */
-    @RequestMapping("getSysAccountByPhone")
-    public ResponseVO getSysAccountByPhone(String phone) {
-        return getSuccessResponseVO(this.sysAccountService.getSysAccountByPhone(phone));
-    }
-
-    /**
-     * 根据Phone更新
-     */
-    @RequestMapping("updateSysAccountByPhone")
-    public ResponseVO updateSysAccountByPhone(SysAccount bean, String phone) {
-        this.sysAccountService.updateSysAccountByPhone(bean, phone);
-        return getSuccessResponseVO(null);
-    }
-
-    /**
-     * 根据Phone删除
-     */
-    @RequestMapping("deleteSysAccountByPhone")
-    public ResponseVO deleteSysAccountByPhone(String phone) {
-        this.sysAccountService.deleteSysAccountByPhone(phone);
-        return getSuccessResponseVO(null);
-    }
 }
