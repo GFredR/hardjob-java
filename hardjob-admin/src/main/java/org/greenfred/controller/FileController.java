@@ -1,0 +1,122 @@
+package org.greenfred.controller;
+
+import org.apache.commons.lang3.StringUtils;
+import org.greenfred.annotation.GlobalInterceptor;
+import org.greenfred.entity.config.AppConfig;
+import org.greenfred.entity.constants.Constants;
+import org.greenfred.entity.vo.ResponseVO;
+import org.greenfred.enums.DateTimePatternEnum;
+import org.greenfred.enums.FileUploadTypeEnum;
+import org.greenfred.exception.BusinessException;
+import org.greenfred.utils.DateUtils;
+import org.greenfred.utils.ScaleFilter;
+import org.greenfred.utils.StringTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+
+@RestController("fileController")
+@RequestMapping("/file")
+public class FileController extends BaseController {
+    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+
+    @Value("${app.config}")
+    private AppConfig appConfig;
+
+    @RequestMapping("uploadFile")
+    public ResponseVO uploadFile(MultipartFile file, Integer type) throws BusinessException {
+        FileUploadTypeEnum uploadTypeEnum = FileUploadTypeEnum.getType(type);
+        String month = DateUtils.format(new Date(), DateTimePatternEnum.YYYYMM.getPattern());
+        String folderName = appConfig.getProjectFolder() + month;
+        File folder = new File(folderName);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        String fileSuffix = StringTools.getFileSuffix(file.getOriginalFilename());
+        String realFileName = StringTools.getRandomString(Constants.LENGTH_30) + fileSuffix;
+        String realFilePath = month + "/" + realFileName;
+        File localFile = new File(appConfig.getProjectFolder() + realFilePath);
+        try {
+            file.transferTo(localFile);
+            //裁剪图片
+            if (uploadTypeEnum != null) {
+                ScaleFilter.createThumbnail(localFile, uploadTypeEnum.getMaxWidth(), uploadTypeEnum.getMaxWidth(), localFile);
+            }
+        } catch (IOException e) {
+            logger.error("文件上传失败", e);
+            throw new BusinessException("文件上传失败");
+        }
+        return getSuccessResponseVO(realFilePath);
+    }
+
+    @RequestMapping("/getImage/{imageFolder}/{imageName}")
+    @GlobalInterceptor
+    public void getImage(HttpServletResponse response,
+                         @PathVariable("imageFolder") String imageFolder,
+                         @PathVariable("imageName") String imageName) {
+        readImage(response, imageFolder, imageName);
+    }
+
+    private void readImage(HttpServletResponse response, String imageFolder, String imageName) {
+        if (StringTools.isEmpty(imageFolder) || StringUtils.isBlank(imageName)) {
+            return;
+        }
+        String imageSuffix = StringTools.getFileSuffix(imageName);
+        String filePath = appConfig.getProjectFolder() + imageFolder + "/" + imageName;
+        imageSuffix = imageSuffix.replace(".", "");
+        String contentType = "image/" + imageSuffix;
+        response.setContentType(contentType);
+        response.setHeader("Cache-Control", "max-age=2592000");
+        readFile(response, filePath);
+    }
+
+    protected void readFile(HttpServletResponse response, String filePath) {
+        if (!StringTools.pathIsOk(filePath)) {
+            return;
+        }
+        OutputStream outputStream = null;
+        FileInputStream inputStream = null;
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                return;
+            }
+            inputStream = new FileInputStream(file);
+            byte[] byteData = new byte[1024];
+            outputStream = response.getOutputStream();
+            int len = 0;
+            while ((len = inputStream.read(byteData)) != -1) {
+                outputStream.write(byteData, 0, len);
+            }
+            outputStream.flush();
+        } catch (Exception e) {
+            logger.error("读取文件异常", e);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error("IO异常", e);
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    logger.error("IO异常", e);
+                }
+            }
+        }
+    }
+}
