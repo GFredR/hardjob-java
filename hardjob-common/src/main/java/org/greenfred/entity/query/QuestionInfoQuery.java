@@ -111,6 +111,16 @@ public class QuestionInfoQuery extends BaseQuery {
 
     private Boolean queryTextContent;
 
+    private String[] questionIds;
+
+    public String[] getQuestionIds() {
+        return questionIds;
+    }
+
+    public void setQuestionIds(String[] questionIds) {
+        this.questionIds = questionIds;
+    }
+
     public Boolean getQueryTextContent() {
         return queryTextContent;
     }

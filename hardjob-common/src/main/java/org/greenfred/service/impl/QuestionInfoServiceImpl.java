@@ -1,17 +1,22 @@
 package org.greenfred.service.impl;
 
+import java.util.Collections;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.greenfred.entity.dto.ImportErrorItem;
 import org.greenfred.entity.po.Category;
+import org.greenfred.enums.PostStatusEnum;
 import org.greenfred.enums.ResponseCodeEnum;
 import org.greenfred.exception.BusinessException;
 import org.greenfred.service.CategoryService;
+import org.greenfred.utils.StringTools;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.greenfred.entity.po.QuestionInfo;
 import org.greenfred.entity.query.QuestionInfoQuery;
@@ -121,6 +126,8 @@ public class QuestionInfoServiceImpl implements QuestionInfoService {
         Category category = categoryService.getCategoryByCategoryId(questionInfo.getCategoryId());
         questionInfo.setCategoryName(category.getCategoryName());
         if (null == questionInfo.getQuestionId()) {
+            Integer questionId = Integer.parseInt(StringTools.getRandomNumber(5));
+            questionInfo.setQuestionId(questionId);
             questionInfo.setCreateTime(new Date());
             this.questionInfoMapper.insert(questionInfo);
         } else {
@@ -133,5 +140,39 @@ public class QuestionInfoServiceImpl implements QuestionInfoService {
             questionInfo.setCreateTime(null);
             this.questionInfoMapper.updateByQuestionId(questionInfo, questionInfo.getQuestionId());
         }
+    }
+
+    @Override
+    public void delQuestionBatch(String questionIds, Integer userId) throws BusinessException {
+        String[] questionIdArray = questionIds.split(",");
+        if (userId != null) {
+            QuestionInfoQuery infoQuery = new QuestionInfoQuery();
+            infoQuery.setQuestionIds(questionIdArray);
+            List<QuestionInfo> questionInfoList = this.questionInfoMapper.selectList(infoQuery);
+            List<QuestionInfo> currentUserDataList = questionInfoList.stream().filter(questionInfo -> !questionInfo.getCreateUserId().equals(String.valueOf(userId)))
+                                                        .collect(Collectors.toList());
+            if (!currentUserDataList.isEmpty()) {
+                throw new BusinessException(ResponseCodeEnum.CODE_600);
+            }
+        }
+        this.questionInfoMapper.deleteBatchByQuestionId(questionIdArray, PostStatusEnum.NO_POST.getStatus(), userId);
+    }
+
+    public void updateStatus(String questionIds, Integer status) {
+        QuestionInfoQuery params = new QuestionInfoQuery();
+        params.setQuestionIds(questionIds.split(","));
+        QuestionInfo questionInfo = new QuestionInfo();
+        questionInfo.setStatus(status);
+        updateByParam(questionInfo, params);
+    }
+
+    @Override
+    public void updateByParam(QuestionInfo questionInfo, QuestionInfoQuery params) {
+        questionInfoMapper.updateQuestionByParam(questionInfo.getStatus(), params.getQuestionIds());
+    }
+
+    @Override
+    public List<List<ImportErrorItem>> importQuestion() {
+        return Collections.emptyList();
     }
 }

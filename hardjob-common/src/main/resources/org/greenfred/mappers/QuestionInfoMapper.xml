@@ -120,6 +120,9 @@
 		<if test="query.questionAnswerFuzzy != null and query.questionAnswerFuzzy!=''">
 			and question_answer like concat('%', #{query.questionAnswerFuzzy})
 		</if>
+		<if test="query.questionIds != null and query.questionIds.length > 0">
+			and question_id in (<foreach collection="query.questionIds" item="item" separator=",">#{item}</foreach>)
+		</if>
 	</sql>
 	<!--通用查询条件-->
 	<sql id="query_condition">
@@ -459,10 +462,29 @@
 		</set>
 		where question_id=#{questionId}
 	</update>
+	<update id="updateQuestionByParam">
+		update question_info
+		<set>
+			<if test="questionIdArray!=null and questionIdArray.length > 0">
+				status = #{status},
+			</if>
+
+		</set>
+		where question_id in (<foreach collection="questionIdArray" separator="," item="item">#{item}</foreach>)
+	</update>
 
 	<!--根据QuestionId删除-->
 	<delete id = "deleteByQuestionId" >
 		delete from question_info where question_id=#{questionId}
+	</delete>
+	<delete id="deleteBatchByQuestionId">
+		delete
+		from question_info
+		where status = #{status} and question_id in (<foreach collection="questionIdArray" separator="," item="item">#{item}</foreach>)
+		<if test="userId != null">
+			and create_user_id = #{userId}
+		</if>
+
 	</delete>
 
 </mapper>

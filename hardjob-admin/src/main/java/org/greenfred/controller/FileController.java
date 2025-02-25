@@ -7,6 +7,8 @@ import org.greenfred.entity.constants.Constants;
 import org.greenfred.entity.vo.ResponseVO;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.enums.FileUploadTypeEnum;
+import org.greenfred.enums.ImportTemplateTypeEnum;
+import org.greenfred.enums.ResponseCodeEnum;
 import org.greenfred.exception.BusinessException;
 import org.greenfred.utils.DateUtils;
 import org.greenfred.utils.ScaleFilter;
@@ -14,16 +16,16 @@ import org.greenfred.utils.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.Date;
 
 @RestController("fileController")
@@ -31,7 +33,6 @@ import java.util.Date;
 public class FileController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @Value("${app.config}")
     private AppConfig appConfig;
 
     @RequestMapping("uploadFile")
@@ -117,6 +118,37 @@ public class FileController extends BaseController {
                     logger.error("IO异常", e);
                 }
             }
+        }
+    }
+
+    @RequestMapping("/downloadTemplate")
+    public void downloadTemplate(HttpServletResponse response, HttpServletRequest request, Integer type) throws BusinessException {
+        ImportTemplateTypeEnum templateTypeEnum = ImportTemplateTypeEnum.getByType(type);
+        if (null == templateTypeEnum) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        OutputStream out = null;
+        InputStream in = null;
+        try {
+            String fileName = templateTypeEnum.getTemplateName();
+            response.setContentType("application/x-msdownload; charset=UTF-8");
+            if (request.getHeader("User-Agent").toLowerCase().indexOf("msie") > 0) {
+                fileName = URLEncoder.encode(fileName, "UTF-8");
+            } else {
+                fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
+            }
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+            ClassPathResource classPathResource = new ClassPathResource(templateTypeEnum.getTemplatePath());
+            in = classPathResource.getInputStream();
+            byte[] byteData = new byte[1024];
+            out = response.getOutputStream();
+            int len = 0;
+            while ((len = in.read(byteData)) != -1) {
+                out.write(byteData, 0, len);
+            }
+            out.flush();
+        } catch (Exception e) {
+            logger.error("读取文件异常", e);
         }
     }
 }

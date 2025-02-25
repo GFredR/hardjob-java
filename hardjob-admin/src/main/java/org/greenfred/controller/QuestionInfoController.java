@@ -4,8 +4,11 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.greenfred.annotation.GlobalInterceptor;
+import org.greenfred.annotation.VerifyParam;
 import org.greenfred.entity.dto.SessionUserAdminDto;
 import org.greenfred.enums.PermissionCodeEnum;
+import org.greenfred.enums.PostStatusEnum;
+import org.greenfred.exception.BusinessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
@@ -52,13 +55,44 @@ public class QuestionInfoController extends BaseController {
 
     @RequestMapping("/saveQuestion")
     @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_EDIT)
-    public ResponseVO saveQuestion(HttpSession session, QuestionInfo questionInfo) {
+    public ResponseVO saveQuestion(HttpSession session, QuestionInfo questionInfo) throws BusinessException {
         SessionUserAdminDto userAdminDto = getUserAdminFromSession(session);
         questionInfo.setCreateUserId(String.valueOf(userAdminDto.getUserId()));
         questionInfo.setCreateUserName(userAdminDto.getUsername());
         questionInfoService.saveQuestion(questionInfo, userAdminDto.getSuperAdmin());
-        return getSuccessResponseVO(questionInfoService.findListByPage(query));
+        return getSuccessResponseVO(null);
     }
+
+    @RequestMapping("/delQuestion")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_EDIT)
+    public ResponseVO delQuestion(HttpSession session, @VerifyParam(required = true) Integer questionId) throws BusinessException {
+        SessionUserAdminDto userAdminDto = getUserAdminFromSession(session);
+        questionInfoService.delQuestionBatch(String.valueOf(questionId),
+                userAdminDto.getSuperAdmin() ? null : userAdminDto.getUserId());
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/delQuestionBatch")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_DEL_BATCH)
+    public ResponseVO delQuestionBatch(@VerifyParam(required = true) String questionIds) throws BusinessException {
+        questionInfoService.delQuestionBatch(questionIds, null);
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/postQuestion")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_POST)
+    public ResponseVO postQuestion(@VerifyParam(required = true) String questionIds) throws BusinessException {
+        questionInfoService.updateStatus(questionIds, PostStatusEnum.POST.getStatus());
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/cancelPostQuestion")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_POST)
+    public ResponseVO cancelPostQuestion(@VerifyParam(required = true) String questionIds) throws BusinessException {
+        questionInfoService.updateStatus(questionIds, PostStatusEnum.NO_POST.getStatus());
+        return getSuccessResponseVO(null);
+    }
+
 
 
 }
