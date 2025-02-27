@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.greenfred.entity.dto.ImportErrorItem;
+import org.greenfred.entity.dto.SessionUserAdminDto;
 import org.greenfred.exception.BusinessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.greenfred.entity.po.QuestionInfo;
 import org.greenfred.entity.query.QuestionInfoQuery;
 import org.greenfred.entity.vo.PaginationResultVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ Description: Service
@@ -75,5 +77,5 @@ public interface QuestionInfoService {
 
     void updateByParam(QuestionInfo questionInfo, QuestionInfoQuery params);
 
-    List<List<ImportErrorItem>> importQuestion();
+    List<ImportErrorItem> importQuestion(MultipartFile file, SessionUserAdminDto userAdminDto) throws BusinessException;
 }

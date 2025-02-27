@@ -1,5 +1,9 @@
 package org.greenfred.entity.constants;
 
+import org.greenfred.utils.ExcelUtils;
+
+import java.util.List;
+
 public class Constants {
     public static final String CHECK_CODE_KEY = "check_code_key";
 
@@ -16,4 +20,9 @@ public class Constants {
     public static final Integer LENGTH_30 = 30;
     public static final Integer LENGTH_50 = 50;
     public static final Integer LENGTH_150 = 150;
+
+
+    public static final String[] EXCEL_TITLE_QUESTION = new String[]{"标题", "分类名称", "难度", "问题描述", "答案分析"};
+
+
 }

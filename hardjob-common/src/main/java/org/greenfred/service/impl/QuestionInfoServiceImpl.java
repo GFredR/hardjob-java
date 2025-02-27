@@ -1,21 +1,21 @@
 package org.greenfred.service.impl;
 
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.greenfred.entity.constants.Constants;
 import org.greenfred.entity.dto.ImportErrorItem;
+import org.greenfred.entity.dto.SessionUserAdminDto;
 import org.greenfred.entity.po.Category;
-import org.greenfred.enums.PostStatusEnum;
-import org.greenfred.enums.ResponseCodeEnum;
+import org.greenfred.enums.*;
 import org.greenfred.exception.BusinessException;
 import org.greenfred.service.CategoryService;
+import org.greenfred.utils.ExcelUtils;
 import org.greenfred.utils.StringTools;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
 
-import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.greenfred.entity.po.QuestionInfo;
@@ -27,9 +27,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 import org.greenfred.mappers.QuestionInfoMapper;
-import org.greenfred.enums.PageSize;
 import org.greenfred.entity.query.SimplePage;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ Description: Service
@@ -172,7 +172,17 @@ public class QuestionInfoServiceImpl implements QuestionInfoService {
     }
 
     @Override
-    public List<List<ImportErrorItem>> importQuestion() {
-        return Collections.emptyList();
+    public List<ImportErrorItem> importQuestion(MultipartFile file, SessionUserAdminDto userAdminDto) throws BusinessException {
+        List<Category> categoryList = categoryService.loadAllCategoryByType(CategoryTypeEnum.QUESTION.getType());
+
+        Map<String, Category> categoryMap = categoryList.stream().collect(Collectors.toMap(Category::getCategoryName,
+                Function.identity(), (data1, data2) -> data2));
+
+        List<List<String>> dataList = ExcelUtils.readExcel(file, Constants.EXCEL_TITLE_QUESTION, 1);
+        return null;
     }
+
+
+
+
 }

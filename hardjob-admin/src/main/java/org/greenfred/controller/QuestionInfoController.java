@@ -5,6 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.greenfred.annotation.GlobalInterceptor;
 import org.greenfred.annotation.VerifyParam;
+import org.greenfred.entity.dto.ImportErrorItem;
 import org.greenfred.entity.dto.SessionUserAdminDto;
 import org.greenfred.enums.PermissionCodeEnum;
 import org.greenfred.enums.PostStatusEnum;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import org.greenfred.service.QuestionInfoService;
 import org.greenfred.controller.BaseController;
 import org.greenfred.entity.vo.ResponseVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ Description: Controller
@@ -93,6 +95,13 @@ public class QuestionInfoController extends BaseController {
         return getSuccessResponseVO(null);
     }
 
+    @RequestMapping("/importQuestion")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_IMPORT)
+    public ResponseVO importQuestion(HttpSession session, MultipartFile file) throws BusinessException {
+        SessionUserAdminDto userAdminDto = getUserAdminFromSession(session);
+        List<ImportErrorItem> errorItemList = questionInfoService.importQuestion(file, userAdminDto);
+        return getSuccessResponseVO(errorItemList);
+    }
 
 
 }
