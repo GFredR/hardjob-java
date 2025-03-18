@@ -116,6 +116,9 @@
 	</select>
 	<!--插入，匹配有值字段-->
 	<insert id="insert" parameterType="org.greenfred.entity.po.ShareInfo">
+		<selectKey keyProperty="bean.shareId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 		INSERT INTO share_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="bean.shareId!=null">

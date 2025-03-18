@@ -2,6 +2,8 @@ package org.greenfred.service;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.greenfred.entity.po.ExamQuestionItem;
+import org.greenfred.exception.BusinessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
@@ -61,4 +63,5 @@ public interface ExamQuestionService {
 	*/
 	Integer deleteExamQuestionByQuestionId(Integer questionId);
 
+	void saveExamQuestion(ExamQuestion examQuestion, List<ExamQuestionItem> examQuestionItemList, Boolean superAdmin) throws BusinessException;
 }

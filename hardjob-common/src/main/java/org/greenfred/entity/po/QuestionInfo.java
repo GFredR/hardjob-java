@@ -106,7 +106,17 @@ public class QuestionInfo implements Serializable {
 
 	private String questionAnswer;
 
-	public void setQuestionId(Integer questionId) {
+	private Integer currentId;
+
+	 public Integer getCurrentId() {
+		 return currentId;
+	 }
+
+	 public void setCurrentId(Integer currentId) {
+		 this.currentId = currentId;
+	 }
+
+	 public void setQuestionId(Integer questionId) {
 		this.questionId = questionId;
 	}
 

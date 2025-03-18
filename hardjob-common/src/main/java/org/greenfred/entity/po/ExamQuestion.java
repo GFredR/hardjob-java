@@ -3,6 +3,7 @@ package org.greenfred.entity.po;
 import java.io.Serializable;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.greenfred.annotation.VerifyParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.greenfred.enums.DateTimePatternEnum;
 import org.greenfred.utils.DateUtils;
@@ -13,7 +14,7 @@ import org.greenfred.utils.DateUtils;
  * @ author: 郭丰锐
  * @ date: 2025/02/18
  */
-public class ExamQuestion implements Serializable {
+public class ExamQuestion extends ExamQuestionItem implements Serializable {
 	/** 
 	* 问题ID
 	*/
@@ -23,13 +24,13 @@ public class ExamQuestion implements Serializable {
 	/** 
 	* 标题
 	*/
-
+	@VerifyParam(required = true)
 	private String title;
 
 	/** 
 	* 分类ID
 	*/
-
+	@VerifyParam(required = true)
 	private Integer categoryId;
 
 	/** 
@@ -41,31 +42,31 @@ public class ExamQuestion implements Serializable {
 	/** 
 	* 难度
 	*/
-
+	@VerifyParam(required = true)
 	private Integer difficultyLevel;
 
 	/** 
 	* 问题类型 0：判断 1：单选题 2：多选
 	*/
-
+	@VerifyParam(required = true)
 	private Integer questionType;
 
 	/** 
 	* 问题描述
 	*/
-
+	@VerifyParam(required = true)
 	private String question;
 
 	/** 
 	* 答案
 	*/
-
+	@VerifyParam(required = true)
 	private String questionAnswer;
 
 	/** 
 	* 答案解析
 	*/
-
+	@VerifyParam(required = true)
 	private String answerAnalysis;
 
 	/** 

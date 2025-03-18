@@ -123,6 +123,14 @@
 		<if test="query.questionIds != null and query.questionIds.length > 0">
 			and question_id in (<foreach collection="query.questionIds" item="item" separator=",">#{item}</foreach>)
 		</if>
+
+		<if test="query.nextType!=null and query.nextType == 1 and query.currentId!=null">
+			<![CDATA[ and question_id < #{query.currentId} order by question_id desc ]]>
+		</if>
+
+		<if test="query.nextType!=null and query.nextType == -1 and query.currentId!=null">
+			<![CDATA[ and question_id < #{query.currentId} order by question_id asc ]]>
+		</if>
 	</sql>
 	<!--通用查询条件-->
 	<sql id="query_condition">
@@ -247,6 +255,9 @@
 	</insert>
 	<!--插入或更新，匹配有值字段-->
 	<insert id="insertOrUpdate" parameterType="org.greenfred.entity.po.QuestionInfo">
+		<selectKey keyProperty="bean.questionId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 		INSERT INTO question_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="bean.questionId!=null">
@@ -410,7 +421,12 @@
 	<select id = "selectByQuestionId" resultMap="base_result_map">
 		select <include refid = "base_column_list"/> from question_info where question_id=#{questionId}
 	</select>
-	<!--根据QuestionId更新-->
+    <select id="showDetailNext" resultMap="base_result_map">
+		select * from question_info
+		<include refid="query_condition"/>
+		limit 0, 1
+	</select>
+    <!--根据QuestionId更新-->
 	<update id = "updateByQuestionId" parameterType="org.greenfred.entity.po.QuestionInfo">
 		update question_info
 		<set>

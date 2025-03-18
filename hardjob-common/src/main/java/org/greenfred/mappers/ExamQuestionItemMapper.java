@@ -2,7 +2,9 @@ package org.greenfred.mappers;
 
 import org.apache.ibatis.annotations.Param;
 import java.io.Serializable;
- /**
+import java.util.List;
+
+/**
  * @ Description: Mapper
  * @ author: 郭丰锐
  * @ date: 2025/02/18
@@ -23,5 +25,5 @@ public interface ExamQuestionItemMapper<T, P> extends BaseMapper {
 	*/
 	Integer deleteByItemId(@Param("itemId") Integer itemId);
 
-
+	void deleteBatch(@Param("itemIdList")List<Integer> itemIdList);
 }

@@ -101,6 +101,9 @@
 	</select>
 	<!--插入，匹配有值字段-->
 	<insert id="insert" parameterType="org.greenfred.entity.po.SysAccount">
+		<selectKey keyProperty="bean.userId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 		INSERT INTO sys_account
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="bean.userId!=null">

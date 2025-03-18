@@ -101,7 +101,17 @@ public class ExamQuestionQuery extends BaseQuery {
 	*/
 	private Integer postUserType;
 
-	@Override
+	private Boolean queryAnswer;
+
+	 public Boolean getQueryAnswer() {
+		 return queryAnswer;
+	 }
+
+	 public void setQueryAnswer(Boolean queryAnswer) {
+		 this.queryAnswer = queryAnswer;
+	 }
+
+	 @Override
 	public String toString() {
 		return "问题ID:" + (questionId == null ? " 空 " : questionId) + ",标题:" + (title == null ? " 空 " : title) + ",分类ID:" + (categoryId == null ? " 空 " : categoryId) + ",分类名称:" + (categoryName == null ? " 空 " : categoryName) + ",难度:" + (difficultyLevel == null ? " 空 " : difficultyLevel) + ",问题类型 0：判断 1：单选题 2：多选:" + (questionType == null ? " 空 " : questionType) + ",问题描述:" + (question == null ? " 空 " : question) + ",答案:" + (questionAnswer == null ? " 空 " : questionAnswer) + ",答案解析:" + (answerAnalysis == null ? " 空 " : answerAnalysis) + ",创建时间:" + (createTime == null ? " 空 " : createTime) + ",0：未发布 1：已发布:" + (status == null ? " 空 " : status) + ",创建问题的用户ID:" + (createUserId == null ? " 空 " : createUserId) + ",创建问题的用户名:" + (createUserName == null ? " 空 " : createUserName) + ",0：内部 1：外部投稿:" + (postUserType == null ? " 空 " : postUserType);
 	}

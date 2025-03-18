@@ -152,8 +152,8 @@ public class SysRoleServiceImpl implements SysRoleService {
             Date curDate = new Date();
             sysRole.setCreateTime(curDate);
             sysRole.setLastUodateTime(curDate);
-            roleId = Integer.parseInt(StringTools.getRandomNumber(5));
-            sysRole.setRoleId(roleId);
+//            roleId = Integer.parseInt(StringTools.getRandomNumber(5));
+//            sysRole.setRoleId(roleId);
             this.sysRoleMapper.insert(sysRole);
 
             addMenu = true;

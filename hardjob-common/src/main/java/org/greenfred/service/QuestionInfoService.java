@@ -78,4 +78,6 @@ public interface QuestionInfoService {
     void updateByParam(QuestionInfo questionInfo, QuestionInfoQuery params);
 
     List<ImportErrorItem> importQuestion(MultipartFile file, SessionUserAdminDto userAdminDto) throws BusinessException;
+
+    QuestionInfo showDetail(QuestionInfoQuery query, Integer nextType, Integer currentId, Boolean updateReadCount) throws BusinessException;
 }

@@ -103,5 +103,12 @@ public class QuestionInfoController extends BaseController {
         return getSuccessResponseVO(errorItemList);
     }
 
-
+    @RequestMapping("/showQuestionDetailNext")
+    @GlobalInterceptor(permissionCode = PermissionCodeEnum.QUESTION_LIST)
+    public ResponseVO showQuestionDetailNext(QuestionInfoQuery questionInfoQuery,
+                                             @VerifyParam(required = true) Integer currentId,
+                                             Integer nextType) throws BusinessException {
+        QuestionInfo questionInfo = questionInfoService.showDetail(questionInfoQuery, nextType, currentId, false);
+        return getSuccessResponseVO(null);
+    }
 }

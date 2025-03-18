@@ -223,8 +223,8 @@ public class SysAccountServiceImpl implements SysAccountService {
             throw new BusinessException("手机号已经存在");
         }
         if (sysAccount.getUserId() == null) {
-            Integer userId = Integer.parseInt(StringTools.getRandomNumber(5));
-            sysAccount.setUserId(userId);
+//            Integer userId = Integer.parseInt(StringTools.getRandomNumber(5));
+//            sysAccount.setUserId(userId);
             sysAccount.setCreateTime(new Date());
             sysAccount.setStatus(UserStatusEnum.ENABLE.getStatus());
             sysAccount.setPassword(StringTools.encodeByMd5(sysAccount.getPassword()));

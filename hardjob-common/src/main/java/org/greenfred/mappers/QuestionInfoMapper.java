@@ -29,4 +29,6 @@ public interface QuestionInfoMapper<T, P> extends BaseMapper {
 	void deleteBatchByQuestionId(@Param("questionIdArray")String[] questionIdArray, @Param("status")Integer status, @Param("userId")Integer userId);
 
 	void updateQuestionByParam(@Param("status")Integer status, @Param("questionIdArray")String[] questionIdArray);
+
+	T showDetailNext(@Param("query") P p);
 }

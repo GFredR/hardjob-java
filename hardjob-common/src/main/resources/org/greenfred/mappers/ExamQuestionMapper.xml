@@ -34,7 +34,7 @@
 	</resultMap>
 	<!--通用查询列-->
 	<sql id="base_column_list">
-		question_id,title,category_id,category_name,difficulty_level,question_type,question,question_answer,answer_analysis,create_time,status,create_user_id,create_user_name,post_user_type
+		question_id,title,category_id,category_name,difficulty_level,question_type,question,create_time,status,create_user_id,create_user_name,post_user_type
 	</sql>
 	<!--基础查询条件-->
 	<sql id="base_query_condition">
@@ -122,7 +122,11 @@
 
 	<!--查询列表-->
 	<select id="selectList" resultMap="base_result_map">
-		SELECT <include refid="base_column_list"/> FROM exam_question <include refid="query_condition"/>
+		SELECT <include refid="base_column_list"/>
+		<if test="query.queryAnswer!=null and query.queryAnswer">
+			,question_answer,answer_analysis
+		</if>
+		FROM exam_question <include refid="query_condition"/>
 		<if test="query.orderBy!=null">order by ${query.orderBy}</if>
 		<if test="query.simplePage!=null"> limit #{query.simplePage.start}, #{query.simplePage.end} </if>
 	</select>
@@ -131,7 +135,10 @@
 		SELECT count(1) FROM exam_question <include refid="query_condition"/>
 	</select>
 	<!--插入，匹配有值字段-->
-	<insert id="insert" parameterType="org.greenfred.entity.po.ExamQuestion">
+	<insert id="insert" parameterType="org.greenfred.entity.po.ExamQuestion" >
+		<selectKey keyProperty="bean.questionId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 		INSERT INTO exam_question
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="bean.questionId!=null">
@@ -179,6 +186,7 @@
 		</trim>
 
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
 			<if test="bean.questionId!=null">
 				#{bean.questionId},
 			</if>

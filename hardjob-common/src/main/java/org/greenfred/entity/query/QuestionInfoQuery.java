@@ -113,6 +113,16 @@ public class QuestionInfoQuery extends BaseQuery {
 
     private String[] questionIds;
 
+    private Integer currentId;
+
+    public Integer getCurrentId() {
+        return currentId;
+    }
+
+    public void setCurrentId(Integer currentId) {
+        this.currentId = currentId;
+    }
+
     public String[] getQuestionIds() {
         return questionIds;
     }

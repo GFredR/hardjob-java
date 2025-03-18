@@ -102,8 +102,8 @@ public class CategoryServiceImpl implements CategoryService {
 		if (category.getCategoryId() == null) {
 			CategoryQuery dbCategoryQuery = new CategoryQuery();
 			Integer count = this.categoryMapper.selectCount(dbCategoryQuery);
-			Integer categoryId = Integer.parseInt(StringTools.getRandomNumber(5));;
-			category.setCategoryId(categoryId);
+//			Integer categoryId = Integer.parseInt(StringTools.getRandomNumber(5));;
+//			category.setCategoryId(categoryId);
 			category.setSort(count + 1);
 			this.categoryMapper.insert(category);
 		} else {
